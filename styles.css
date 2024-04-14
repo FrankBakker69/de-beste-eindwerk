@@ -9,26 +9,26 @@ body {
 
 .game-container {
     position: relative;
-    width: 300px;
-    height: 300px;
+    width: 400px; /* Aangepaste breedte */
+    height: 400px; /* Aangepaste hoogte */
     border: 2px solid #333;
 }
 
 .goal {
     position: absolute;
-    top: 10px;
-    left: 130px;
-    width: 40px;
-    height: 40px;
+    top: 20px;
+    left: 180px;
+    width: 60px;
+    height: 60px;
     background-color: green;
 }
 
 .ball {
     position: absolute;
-    bottom: 10px;
-    left: 130px;
-    width: 20px;
-    height: 20px;
+    bottom: 20px;
+    left: 180px;
+    width: 30px;
+    height: 30px;
     background-color: red;
     border-radius: 50%;
 }
