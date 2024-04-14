@@ -1,34 +1,33 @@
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+body, html {
     margin: 0;
-    background-color: #f0f0f0;
+    padding: 0;
+    height: 100%;
 }
 
-.game-container {
+#game-container {
     position: relative;
-    width: 400px; /* Aangepaste breedte */
-    height: 400px; /* Aangepaste hoogte */
-    border: 2px solid #333;
+    width: 500px;
+    height: 500px;
+    margin: 50px auto;
+    border: 2px solid black;
 }
 
-.goal {
-    position: absolute;
-    top: 20px;
-    left: 180px;
-    width: 60px;
-    height: 60px;
-    background-color: green;
-}
-
-.ball {
-    position: absolute;
-    bottom: 20px;
-    left: 180px;
-    width: 30px;
-    height: 30px;
+#ball {
+    width: 50px;
+    height: 50px;
     background-color: red;
     border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#goal {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+    position: absolute;
+    top: 80%;
+    left: 80%;
 }
