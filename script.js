@@ -67,4 +67,69 @@ document.addEventListener("DOMContentLoaded", function() {
     // Functie om te controleren of het balletje een obstakel raakt
     function isObstacleCollision(x, y) {
         for (const obstacle of obstacles) {
-            const obstacleRect = obstacle.element
+            const obstacleRect = obstacle.element.getBoundingClientRect();
+
+            if (x >= obstacleRect.left && x < obstacleRect.right &&
+                y >= obstacleRect.top && y < obstacleRect.bottom) {
+                return true; // Botst met het obstakel
+            }
+        }
+        return false; // Geen obstakelbotsing
+    }
+
+    // Functie om de obstakels periodiek te laten bewegen
+    function moveObstacles() {
+        obstacles.forEach(obstacle => {
+            let obstacleLeft = parseInt(getComputedStyle(obstacle.element).left);
+
+            // Beweeg het obstakel naar rechts
+            if (obstacle.direction === 'right') {
+                obstacleLeft += obstacle.speed;
+                if (obstacleLeft > gameContainer.clientWidth) {
+                    obstacleLeft = -50; // Reset naar de linkerzijde van het spelcontainer
+                }
+            }
+            // Beweeg het obstakel naar links
+            else if (obstacle.direction === 'left') {
+                obstacleLeft -= obstacle.speed;
+                if (obstacleLeft < -50) {
+                    obstacleLeft = gameContainer.clientWidth; // Reset naar de rechterzijde van het spelcontainer
+                }
+            }
+
+            obstacle.element.style.left = obstacleLeft + 'px';
+
+            // Controleer of het balletje een obstakel raakt na het bewegen van de obstakels
+            if (isObstacleCollision(ballLeft, ballTop)) {
+                // Reset de positie van het balletje als het een obstakel raakt
+                ball.style.left = '50px';
+                ball.style.top = '50px';
+                ballLeft = 50;
+                ballTop = 50;
+            }
+        });
+
+        // Herhaal de functie periodiek met requestAnimationFrame
+        requestAnimationFrame(moveObstacles);
+    }
+
+    // Start het bewegen van de obstakels
+    moveObstacles();
+
+    // Event listener voor het bewegen van het balletje
+    document.addEventListener('keydown', function(event) {
+        const key = event.key;
+        moveBall(key);
+    });
+
+    // Controleer of de bal het doel bereikt
+    function checkCollision(ball, goal) {
+        const ballRect = ball.getBoundingClientRect();
+        const goalRect = goal.getBoundingClientRect();
+
+        return !(ballRect.right < goalRect.left ||
+                 ballRect.left > goalRect.right ||
+                 ballRect.bottom < goalRect.top ||
+                 ballRect.top > goalRect.bottom);
+    }
+});
