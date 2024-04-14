@@ -1,53 +1,42 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const ball = document.getElementById('ball');
-    const goal = document.getElementById('goal');
-    const gameContainer = document.getElementById('game-container');
+document.addEventListener('DOMContentLoaded', () => {
+    const ball = document.querySelector('.ball');
+    const goal = document.querySelector('.goal');
+    const gameContainer = document.querySelector('.game-container');
 
-    let ballX = 20;
-    let ballY = 190;
-    let ballSpeed = 5;
+    let ballX = 130;
+    const ballY = 280;
 
     function updateBallPosition() {
-        ball.style.left = ballX + 'px';
-        ball.style.top = ballY + 'px';
-
-        // Check collision with goal
-        if (isColliding(ball, goal)) {
-            console.log("Goal! Je hebt gewonnen.");
-            ball.style.backgroundColor = 'green';
-        }
+        ball.style.left = `${ballX}px`;
     }
 
-    function isColliding(ball, goal) {
+    function checkCollision() {
         const ballRect = ball.getBoundingClientRect();
         const goalRect = goal.getBoundingClientRect();
 
-        return (
-            ballRect.right >= goalRect.left &&
-            ballRect.left <= goalRect.right &&
-            ballRect.bottom >= goalRect.top &&
-            ballRect.top <= goalRect.bottom
+        return !(
+            ballRect.right < goalRect.left ||
+            ballRect.left > goalRect.right ||
+            ballRect.bottom < goalRect.top ||
+            ballRect.top > goalRect.bottom
         );
     }
 
-    document.addEventListener('keydown', function(event) {
-        const key = event.key;
-
-        switch(key) {
-            case 'ArrowLeft':
-                ballX = Math.max(ballX - ballSpeed, 0);
-                break;
-            case 'ArrowRight':
-                ballX = Math.min(ballX + ballSpeed, gameContainer.clientWidth - ball.offsetWidth);
-                break;
-            case 'ArrowUp':
-                ballY = Math.max(ballY - ballSpeed, 0);
-                break;
-            case 'ArrowDown':
-                ballY = Math.min(ballY + ballSpeed, gameContainer.clientHeight - ball.offsetHeight);
-                break;
+    function handleKeyDown(event) {
+        if (event.key === 'ArrowLeft' && ballX > 10) {
+            ballX -= 10;
+            updateBallPosition();
+        } else if (event.key === 'ArrowRight' && ballX < 270) {
+            ballX += 10;
+            updateBallPosition();
         }
 
-        updateBallPosition();
-    });
+        if (checkCollision()) {
+            alert('Geweldig! Je hebt het doel bereikt!');
+            ballX = 130;
+            updateBallPosition();
+        }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
 });
