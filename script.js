@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
     const ball = document.getElementById('ball');
     const goal = document.getElementById('goal');
+    const obstacle1 = document.getElementById('obstacle1');
+    const obstacle2 = document.getElementById('obstacle2');
     const gameContainer = document.getElementById('game-container');
 
     // Huidige positie van het balletje
@@ -11,12 +13,11 @@ document.addEventListener("DOMContentLoaded", function() {
     let goalLeft = parseInt(getComputedStyle(goal).left);
     let goalTop = parseInt(getComputedStyle(goal).top);
 
-    // Array van obstakelposities [left, top]
-    const obstacles = [
-        [200, 200], // Voorbeeld obstakel op positie (200px, 200px)
-        [300, 350]  // Voorbeeld obstakel op positie (300px, 350px)
-        // Voeg meer obstakels toe zoals gewenst
-    ];
+    // Startposities van de obstakels
+    let obstacle1Left = parseInt(getComputedStyle(obstacle1).left);
+    let obstacle1Top = parseInt(getComputedStyle(obstacle1).top);
+    let obstacle2Left = parseInt(getComputedStyle(obstacle2).left);
+    let obstacle2Top = parseInt(getComputedStyle(obstacle2).top);
 
     // Functie om het balletje te bewegen
     function moveBall(direction) {
@@ -70,32 +71,53 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Functie om te controleren of het balletje een obstakel raakt
     function isObstacleCollision(x, y) {
-        for (const obstacle of obstacles) {
-            const obstacleLeft = obstacle[0];
-            const obstacleTop = obstacle[1];
-            const obstacleSize = 50; // Afmetingen van het obstakel (bijvoorbeeld 50x50)
+        const obstacles = [obstacle1, obstacle2];
 
-            if (x >= obstacleLeft && x < obstacleLeft + obstacleSize &&
-                y >= obstacleTop && y < obstacleTop + obstacleSize) {
+        for (const obstacle of obstacles) {
+            const obstacleRect = obstacle.getBoundingClientRect();
+
+            if (x >= obstacleRect.left && x < obstacleRect.right &&
+                y >= obstacleRect.top && y < obstacleRect.bottom) {
                 return true; // Botst met het obstakel
             }
         }
         return false; // Geen obstakelbotsing
     }
 
+    // Functie om de obstakels periodiek te laten bewegen
+    function moveObstacles() {
+        // Beweeg obstacle1 naar rechts en obstacle2 naar links
+        obstacle1Left += 3;
+        obstacle2Left -= 3;
+
+        // Controleer of obstakels buiten het spelcontainer gaan
+        if (obstacle1Left > gameContainer.clientWidth) {
+            obstacle1Left = -50; // Reset naar de linkerzijde van het spelcontainer
+        }
+        if (obstacle2Left < -50) {
+            obstacle2Left = gameContainer.clientWidth; // Reset naar de rechterzijde van het spelcontainer
+        }
+
+        // Update de posities van de obstakels
+        obstacle1.style.left = obstacle1Left + 'px';
+        obstacle2.style.left = obstacle2Left + 'px';
+
+        // Controleer of het balletje een obstakel raakt na het bewegen van de obstakels
+        if (isObstacleCollision(ballLeft, ballTop)) {
+            // Reset de positie van het balletje als het een obstakel raakt
+            ball.style.left = '50px';
+            ball.style.top = '50px';
+            ballLeft = 50;
+            ballTop = 50;
+        }
+
+        // Herhaal de functie periodiek met requestAnimationFrame
+        requestAnimationFrame(moveObstacles);
+    }
+
+    // Start het bewegen van de obstakels
+    moveObstacles();
+
     // Event listener voor het bewegen van het balletje
     document.addEventListener('keydown', function(event) {
-        const key = event.key;
-        moveBall(key);
-    });
-
-    // Controleer of de bal het doel bereikt
-    function checkCollision(ball, goal) {
-        const ballRect = ball.getBoundingClientRect();
-        const goalRect = goal.getBoundingClientRect();
-        return !(ballRect.right < goalRect.left ||
-                 ballRect.left > goalRect.right ||
-                 ballRect.bottom < goalRect.top ||
-                 ballRect.top > goalRect.bottom);
-    }
-});
+        const key = event
