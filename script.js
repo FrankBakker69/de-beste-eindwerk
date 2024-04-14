@@ -3,15 +3,34 @@ document.addEventListener("DOMContentLoaded", function() {
     const goal = document.getElementById('goal');
     const gameContainer = document.getElementById('game-container');
 
+    // Huidige positie van het balletje
+    let ballLeft = parseInt(getComputedStyle(ball).left);
+    let ballTop = parseInt(getComputedStyle(ball).top);
+
     // Huidige positie van het doel
     let goalLeft = parseInt(getComputedStyle(goal).left);
     let goalTop = parseInt(getComputedStyle(goal).top);
 
-    // Beweging van het doel
+    // Beweging van het balletje en het doel
     document.addEventListener('keydown', function(event) {
         const key = event.key;
 
         switch (key) {
+            // Beweging van het balletje met pijltoetsen
+            case 'ArrowUp':
+                ballTop -= 10; // Verplaats het balletje omhoog
+                break;
+            case 'ArrowDown':
+                ballTop += 10; // Verplaats het balletje omlaag
+                break;
+            case 'ArrowLeft':
+                ballLeft -= 10; // Verplaats het balletje naar links
+                break;
+            case 'ArrowRight':
+                ballLeft += 10; // Verplaats het balletje naar rechts
+                break;
+            
+            // Beweging van het doel met W, A, S, D toetsen
             case 'w':
             case 'W':
                 goalTop -= 10; // Verplaats het doel omhoog
@@ -30,7 +49,24 @@ document.addEventListener("DOMContentLoaded", function() {
                 break;
         }
 
-        // Zet de nieuwe positie van het doel (voorkom dat het doel buiten het spelcontainer gaat)
+        // Zet de nieuwe positie van het balletje (voorkom dat het buiten het spelcontainer gaat)
+        if (ballLeft < 0) {
+            ballLeft = 0;
+        }
+        if (ballLeft > gameContainer.clientWidth - ball.clientWidth) {
+            ballLeft = gameContainer.clientWidth - ball.clientWidth;
+        }
+        if (ballTop < 0) {
+            ballTop = 0;
+        }
+        if (ballTop > gameContainer.clientHeight - ball.clientHeight) {
+            ballTop = gameContainer.clientHeight - ball.clientHeight;
+        }
+
+        ball.style.left = ballLeft + 'px';
+        ball.style.top = ballTop + 'px';
+
+        // Zet de nieuwe positie van het doel (voorkom dat het buiten het spelcontainer gaat)
         if (goalLeft < 0) {
             goalLeft = 0;
         }
