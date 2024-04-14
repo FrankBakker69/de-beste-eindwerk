@@ -1,52 +1,52 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const ball = document.querySelector('.ball');
-    const goal = document.querySelector('.goal');
-    const gameContainer = document.querySelector('.game-container');
+document.addEventListener("DOMContentLoaded", function() {
+    const ball = document.getElementById('ball');
+    const goal = document.getElementById('goal');
+    const gameContainer = document.getElementById('game-container');
 
-    let ballX = 130;
-    let ballY = 280;
+    // Huidige positie van het doel
+    let goalLeft = parseInt(getComputedStyle(goal).left);
+    let goalTop = parseInt(getComputedStyle(goal).top);
 
-    function updateBallPosition() {
-        ball.style.left = `${ballX}px`;
-        ball.style.bottom = `${ballY}px`; // Update de verticale positie
-    }
+    // Beweging van het doel
+    document.addEventListener('keydown', function(event) {
+        const key = event.key;
 
-    function checkCollision() {
+        switch (key) {
+            case 'w':
+            case 'W':
+                goalTop -= 10;
+                break;
+            case 's':
+            case 'S':
+                goalTop += 10;
+                break;
+            case 'a':
+            case 'A':
+                goalLeft -= 10;
+                break;
+            case 'd':
+            case 'D':
+                goalLeft += 10;
+                break;
+        }
+
+        // Zet de nieuwe positie van het doel
+        goal.style.left = goalLeft + 'px';
+        goal.style.top = goalTop + 'px';
+
+        // Controleer winvoorwaarde
+        if (checkCollision(ball, goal)) {
+            alert('Gefeliciteerd! Je hebt het doel bereikt!');
+        }
+    });
+
+    // Controleer of de bal het doel bereikt
+    function checkCollision(ball, goal) {
         const ballRect = ball.getBoundingClientRect();
         const goalRect = goal.getBoundingClientRect();
-
-        return !(
-            ballRect.right < goalRect.left ||
-            ballRect.left > goalRect.right ||
-            ballRect.bottom < goalRect.top ||
-            ballRect.top > goalRect.bottom
-        );
+        return !(ballRect.right < goalRect.left ||
+                 ballRect.left > goalRect.right ||
+                 ballRect.bottom < goalRect.top ||
+                 ballRect.top > goalRect.bottom);
     }
-
-    function handleKeyDown(event) {
-        const speed = 10; // Snelheid van beweging
-
-        if (event.key === 'ArrowLeft' && ballX > 10) {
-            ballX -= speed;
-            updateBallPosition();
-        } else if (event.key === 'ArrowRight' && ballX < 270) {
-            ballX += speed;
-            updateBallPosition();
-        } else if (event.key === 'ArrowUp' && ballY < 270) {
-            ballY += speed; // Let op: omhoog is positieve Y-richting
-            updateBallPosition();
-        } else if (event.key === 'ArrowDown' && ballY > 10) {
-            ballY -= speed; // Omlaag is negatieve Y-richting
-            updateBallPosition();
-        }
-
-        if (checkCollision()) {
-            alert('Geweldig! Je hebt het doel bereikt!');
-            ballX = 130;
-            ballY = 280;
-            updateBallPosition();
-        }
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
 });
