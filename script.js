@@ -11,100 +11,82 @@ document.addEventListener("DOMContentLoaded", function() {
     let goalLeft = parseInt(getComputedStyle(goal).left);
     let goalTop = parseInt(getComputedStyle(goal).top);
 
+    // Array van obstakelposities [left, top]
+    const obstacles = [
+        [200, 200], // Voorbeeld obstakel op positie (200px, 200px)
+        [300, 350]  // Voorbeeld obstakel op positie (300px, 350px)
+        // Voeg meer obstakels toe zoals gewenst
+    ];
+
     // Functie om het balletje te bewegen
     function moveBall(direction) {
+        let newBallLeft = ballLeft;
+        let newBallTop = ballTop;
+
         switch (direction) {
             case 'ArrowUp':
-                ballTop -= 10; // Verplaats het balletje omhoog
+                newBallTop -= 10; // Verplaats het balletje omhoog
                 break;
             case 'ArrowDown':
-                ballTop += 10; // Verplaats het balletje omlaag
+                newBallTop += 10; // Verplaats het balletje omlaag
                 break;
             case 'ArrowLeft':
-                ballLeft -= 10; // Verplaats het balletje naar links
+                newBallLeft -= 10; // Verplaats het balletje naar links
                 break;
             case 'ArrowRight':
-                ballLeft += 10; // Verplaats het balletje naar rechts
+                newBallLeft += 10; // Verplaats het balletje naar rechts
                 break;
         }
 
-        // Zet de nieuwe positie van het balletje (voorkom dat het buiten het spelcontainer gaat)
-        if (ballLeft < 0) {
-            ballLeft = 0;
-        }
-        if (ballLeft > gameContainer.clientWidth - ball.clientWidth) {
-            ballLeft = gameContainer.clientWidth - ball.clientWidth;
-        }
-        if (ballTop < 0) {
-            ballTop = 0;
-        }
-        if (ballTop > gameContainer.clientHeight - ball.clientHeight) {
-            ballTop = gameContainer.clientHeight - ball.clientHeight;
-        }
+        // Controleer of het nieuwe positie van het balletje een obstakel raakt
+        if (!isObstacleCollision(newBallLeft, newBallTop)) {
+            // Update de positie van het balletje
+            ballLeft = newBallLeft;
+            ballTop = newBallTop;
 
-        ball.style.left = ballLeft + 'px';
-        ball.style.top = ballTop + 'px';
+            // Zet de nieuwe positie van het balletje (voorkom dat het buiten het spelcontainer gaat)
+            if (ballLeft < 0) {
+                ballLeft = 0;
+            }
+            if (ballLeft > gameContainer.clientWidth - ball.clientWidth) {
+                ballLeft = gameContainer.clientWidth - ball.clientWidth;
+            }
+            if (ballTop < 0) {
+                ballTop = 0;
+            }
+            if (ballTop > gameContainer.clientHeight - ball.clientHeight) {
+                ballTop = gameContainer.clientHeight - ball.clientHeight;
+            }
 
-        // Controleer winvoorwaarde
-        if (checkCollision(ball, goal)) {
-            alert('Gefeliciteerd! Je hebt het doel bereikt!');
+            ball.style.left = ballLeft + 'px';
+            ball.style.top = ballTop + 'px';
+
+            // Controleer winvoorwaarde
+            if (checkCollision(ball, goal)) {
+                alert('Gefeliciteerd! Je hebt het doel bereikt!');
+            }
         }
     }
 
-    // Functie om het doel te bewegen
-    function moveGoal(direction) {
-        switch (direction) {
-            case 'w':
-            case 'W':
-                goalTop -= 10; // Verplaats het doel omhoog
-                break;
-            case 's':
-            case 'S':
-                goalTop += 10; // Verplaats het doel omlaag
-                break;
-            case 'a':
-            case 'A':
-                goalLeft -= 10; // Verplaats het doel naar links
-                break;
-            case 'd':
-            case 'D':
-                goalLeft += 10; // Verplaats het doel naar rechts
-                break;
-        }
+    // Functie om te controleren of het balletje een obstakel raakt
+    function isObstacleCollision(x, y) {
+        for (const obstacle of obstacles) {
+            const obstacleLeft = obstacle[0];
+            const obstacleTop = obstacle[1];
+            const obstacleSize = 50; // Afmetingen van het obstakel (bijvoorbeeld 50x50)
 
-        // Zet de nieuwe positie van het doel (voorkom dat het buiten het spelcontainer gaat)
-        if (goalLeft < 0) {
-            goalLeft = 0;
+            if (x >= obstacleLeft && x < obstacleLeft + obstacleSize &&
+                y >= obstacleTop && y < obstacleTop + obstacleSize) {
+                return true; // Botst met het obstakel
+            }
         }
-        if (goalLeft > gameContainer.clientWidth - goal.clientWidth) {
-            goalLeft = gameContainer.clientWidth - goal.clientWidth;
-        }
-        if (goalTop < 0) {
-            goalTop = 0;
-        }
-        if (goalTop > gameContainer.clientHeight - goal.clientHeight) {
-            goalTop = gameContainer.clientHeight - goal.clientHeight;
-        }
-
-        goal.style.left = goalLeft + 'px';
-        goal.style.top = goalTop + 'px';
-
-        // Controleer winvoorwaarde
-        if (checkCollision(ball, goal)) {
-            alert('Gefeliciteerd! Je hebt het doel bereikt!');
-        }
+        return false; // Geen obstakelbotsing
     }
 
     // Event listener voor het bewegen van het balletje
     document.addEventListener('keydown', function(event) {
         const key = event.key;
         moveBall(key);
-    });
-
-    // Event listener voor het bewegen van het doel
-    document.addEventListener('keydown', function(event) {
-        const key = event.key;
-        moveGoal(key);
     });
 
     // Controleer of de bal het doel bereikt
