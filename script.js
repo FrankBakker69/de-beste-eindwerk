@@ -1,23 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
     const ball = document.getElementById('ball');
     const goal = document.getElementById('goal');
-    const obstacle1 = document.getElementById('obstacle1');
-    const obstacle2 = document.getElementById('obstacle2');
+    const obstacle1 = document.querySelector('.obstacle1');
+    const obstacle2 = document.querySelector('.obstacle2');
     const gameContainer = document.getElementById('game-container');
 
     // Huidige positie van het balletje
     let ballLeft = parseInt(getComputedStyle(ball).left);
     let ballTop = parseInt(getComputedStyle(ball).top);
-
-    // Huidige positie van het doel
-    let goalLeft = parseInt(getComputedStyle(goal).left);
-    let goalTop = parseInt(getComputedStyle(goal).top);
-
-    // Startposities van de obstakels
-    let obstacle1Left = parseInt(getComputedStyle(obstacle1).left);
-    let obstacle1Top = parseInt(getComputedStyle(obstacle1).top);
-    let obstacle2Left = parseInt(getComputedStyle(obstacle2).left);
-    let obstacle2Top = parseInt(getComputedStyle(obstacle2).top);
 
     // Functie om het balletje te bewegen
     function moveBall(direction) {
@@ -86,20 +76,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Functie om de obstakels periodiek te laten bewegen
     function moveObstacles() {
-        // Beweeg obstacle1 naar rechts en obstacle2 naar links
-        obstacle1Left += 3;
-        obstacle2Left -= 3;
-
-        // Controleer of obstakels buiten het spelcontainer gaan
+        // Beweeg obstacle1 van links naar rechts
+        let obstacle1Left = parseInt(getComputedStyle(obstacle1).left);
+        obstacle1Left += 2;
         if (obstacle1Left > gameContainer.clientWidth) {
             obstacle1Left = -50; // Reset naar de linkerzijde van het spelcontainer
         }
+        obstacle1.style.left = obstacle1Left + 'px';
+
+        // Beweeg obstacle2 van rechts naar links
+        let obstacle2Left = parseInt(getComputedStyle(obstacle2).left);
+        obstacle2Left -= 3;
         if (obstacle2Left < -50) {
             obstacle2Left = gameContainer.clientWidth; // Reset naar de rechterzijde van het spelcontainer
         }
-
-        // Update de posities van de obstakels
-        obstacle1.style.left = obstacle1Left + 'px';
         obstacle2.style.left = obstacle2Left + 'px';
 
         // Controleer of het balletje een obstakel raakt na het bewegen van de obstakels
@@ -120,4 +110,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Event listener voor het bewegen van het balletje
     document.addEventListener('keydown', function(event) {
-        const key = event
+        const key = event.key;
+        moveBall(key);
+    });
+
+    // Controleer of de bal het doel bereikt
+    function checkCollision(ball, goal) {
+        const ballRect = ball.getBoundingClientRect();
+        const goalRect = goal.getBoundingClientRect();
