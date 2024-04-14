@@ -38,13 +38,3 @@ body, html {
     background-color: gray;
     position: absolute;
 }
-
-.obstacle1 {
-    left: 50px;
-    top: 100px;
-}
-
-.obstacle2 {
-    left: 350px;
-    top: 300px;
-}
