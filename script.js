@@ -11,12 +11,9 @@ document.addEventListener("DOMContentLoaded", function() {
     let goalLeft = parseInt(getComputedStyle(goal).left);
     let goalTop = parseInt(getComputedStyle(goal).top);
 
-    // Beweging van het balletje en het doel
-    document.addEventListener('keydown', function(event) {
-        const key = event.key;
-
-        switch (key) {
-            // Beweging van het balletje met pijltoetsen
+    // Functie om het balletje te bewegen
+    function moveBall(direction) {
+        switch (direction) {
             case 'ArrowUp':
                 ballTop -= 10; // Verplaats het balletje omhoog
                 break;
@@ -28,24 +25,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 break;
             case 'ArrowRight':
                 ballLeft += 10; // Verplaats het balletje naar rechts
-                break;
-            
-            // Beweging van het doel met W, A, S, D toetsen
-            case 'w':
-            case 'W':
-                goalTop -= 10; // Verplaats het doel omhoog
-                break;
-            case 's':
-            case 'S':
-                goalTop += 10; // Verplaats het doel omlaag
-                break;
-            case 'a':
-            case 'A':
-                goalLeft -= 10; // Verplaats het doel naar links
-                break;
-            case 'd':
-            case 'D':
-                goalLeft += 10; // Verplaats het doel naar rechts
                 break;
         }
 
@@ -65,6 +44,33 @@ document.addEventListener("DOMContentLoaded", function() {
 
         ball.style.left = ballLeft + 'px';
         ball.style.top = ballTop + 'px';
+
+        // Controleer winvoorwaarde
+        if (checkCollision(ball, goal)) {
+            alert('Gefeliciteerd! Je hebt het doel bereikt!');
+        }
+    }
+
+    // Functie om het doel te bewegen
+    function moveGoal(direction) {
+        switch (direction) {
+            case 'w':
+            case 'W':
+                goalTop -= 10; // Verplaats het doel omhoog
+                break;
+            case 's':
+            case 'S':
+                goalTop += 10; // Verplaats het doel omlaag
+                break;
+            case 'a':
+            case 'A':
+                goalLeft -= 10; // Verplaats het doel naar links
+                break;
+            case 'd':
+            case 'D':
+                goalLeft += 10; // Verplaats het doel naar rechts
+                break;
+        }
 
         // Zet de nieuwe positie van het doel (voorkom dat het buiten het spelcontainer gaat)
         if (goalLeft < 0) {
@@ -87,6 +93,18 @@ document.addEventListener("DOMContentLoaded", function() {
         if (checkCollision(ball, goal)) {
             alert('Gefeliciteerd! Je hebt het doel bereikt!');
         }
+    }
+
+    // Event listener voor het bewegen van het balletje
+    document.addEventListener('keydown', function(event) {
+        const key = event.key;
+        moveBall(key);
+    });
+
+    // Event listener voor het bewegen van het doel
+    document.addEventListener('keydown', function(event) {
+        const key = event.key;
+        moveGoal(key);
     });
 
     // Controleer of de bal het doel bereikt
