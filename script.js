@@ -14,23 +14,36 @@ document.addEventListener("DOMContentLoaded", function() {
         switch (key) {
             case 'w':
             case 'W':
-                goalTop -= 10;
+                goalTop -= 10; // Verplaats het doel omhoog
                 break;
             case 's':
             case 'S':
-                goalTop += 10;
+                goalTop += 10; // Verplaats het doel omlaag
                 break;
             case 'a':
             case 'A':
-                goalLeft -= 10;
+                goalLeft -= 10; // Verplaats het doel naar links
                 break;
             case 'd':
             case 'D':
-                goalLeft += 10;
+                goalLeft += 10; // Verplaats het doel naar rechts
                 break;
         }
 
-        // Zet de nieuwe positie van het doel
+        // Zet de nieuwe positie van het doel (voorkom dat het doel buiten het spelcontainer gaat)
+        if (goalLeft < 0) {
+            goalLeft = 0;
+        }
+        if (goalLeft > gameContainer.clientWidth - goal.clientWidth) {
+            goalLeft = gameContainer.clientWidth - goal.clientWidth;
+        }
+        if (goalTop < 0) {
+            goalTop = 0;
+        }
+        if (goalTop > gameContainer.clientHeight - goal.clientHeight) {
+            goalTop = gameContainer.clientHeight - goal.clientHeight;
+        }
+
         goal.style.left = goalLeft + 'px';
         goal.style.top = goalTop + 'px';
 
